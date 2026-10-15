@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GradeHawk</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>GradeHawk</h1>
+        <p>Search historical grade data for University of Iowa courses.</p>
+      </header>
+
+      <form id="filters" class="filters">
+        <div class="filter-field filter-field-course">
+          <label for="course-search">Course</label>
+          <input
+            id="course-search"
+            name="course"
+            type="search"
+            placeholder="e.g. CS:2230 or Data Structures"
+            autocomplete="off"
+          />
+        </div>
+        <div class="filter-field">
+          <label for="semester-filter">Semester</label>
+          <select id="semester-filter" name="semester">
+            <option value="">All semesters</option>
+          </select>
+        </div>
+        <div class="filter-field">
+          <label for="page-size">Results per page</label>
+          <select id="page-size" name="page-size">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+        </div>
+        <fieldset class="display-options">
+          <legend>Group results</legend>
+          <label class="checkbox-label" for="group-sections">
+            <input id="group-sections" name="group-sections" type="checkbox" />
+            Group sections
+          </label>
+          <label class="checkbox-label" for="group-semesters">
+            <input id="group-semesters" name="group-semesters" type="checkbox" />
+            Group semesters
+          </label>
+        </fieldset>
+      </form>
+
+      <section aria-live="polite">
+        <p id="status">Loading courses...</p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="courseCode">
+                    Course
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="courseTitle">
+                    Course Title
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="semester">
+                    Semester
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="instructor">
+                    Instructor
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="averageGrade">
+                    Average Grade
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+                <th scope="col">
+                  <button class="sort-button" type="button" data-sort-key="medianGrade">
+                    Median Grade
+                    <span class="sort-indicator" aria-hidden="true"></span>
+                  </button>
+                </th>
+              </tr>
+            </thead>
+            <tbody id="course-results"></tbody>
+          </table>
+        </div>
+        <nav id="pagination" class="pagination" aria-label="Results pages" hidden>
+          <button id="previous-page" type="button">Previous</button>
+          <span id="page-status"></span>
+          <button id="next-page" type="button">Next</button>
+        </nav>
+      </section>
+    </main>
+    <script src="script.js"></script>
+  </body>
+</html>

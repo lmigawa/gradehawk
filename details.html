@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Course Grade Distribution - GradeHawk</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <p class="back-navigation">
+        <a href="index.html"><span aria-hidden="true">←</span> Search results</a>
+      </p>
+      <h1>GradeHawk</h1>
+      <form id="detail-controls" class="detail-controls" hidden>
+        <label for="semester-filter">Semester:</label>
+        <select id="semester-filter"></select>
+        <label class="checkbox-label" for="all-semesters-filter">
+          <input id="all-semesters-filter" type="checkbox" />
+          All semesters
+        </label>
+        <label for="section-filter">Section:</label>
+        <select id="section-filter"></select>
+        <label class="checkbox-label" for="grouped-filter">
+          <input id="grouped-filter" type="checkbox" />
+          All sections
+        </label>
+      </form>
+      <h2 id="course-heading">Course grade distribution</h2>
+      <p id="course-summary">Loading course data...</p>
+      <p id="error-message" hidden>Course details could not be found.</p>
+      <section id="histogram-section" aria-labelledby="histogram-heading" hidden>
+        <h3 id="histogram-heading">Grade distribution</h3>
+        <div id="histogram" class="histogram" role="img" aria-label="Grade distribution histogram"></div>
+        <table class="distribution-table">
+          <caption>Grade counts</caption>
+          <thead>
+            <tr>
+              <th scope="col">Grade</th>
+              <th scope="col">Students</th>
+            </tr>
+          </thead>
+          <tbody id="distribution-table-body"></tbody>
+        </table>
+      </section>
+    </main>
+    <script src="details.js"></script>
+  </body>
+</html>

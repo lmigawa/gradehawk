@@ -1,0 +1,10 @@
+{
+  "name": "iowa-grades",
+  "private": true,
+  "scripts": {
+    "build-data": "node scripts/build-data.mjs"
+  },
+  "devDependencies": {
+    "node-xlsx": "^0.24.0"
+  }
+}

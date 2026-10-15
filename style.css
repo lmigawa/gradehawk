@@ -1,0 +1,399 @@
+body {
+  background: #f7f7f7;
+  color: #222;
+  font-family: Arial, Verdana, sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.page {
+  background: #fff;
+  border: 1px solid #bbb;
+  margin: 18px auto;
+  max-width: 1100px;
+  padding: 12px 16px 20px;
+}
+
+h1 {
+  color: #1b4f8a;
+  font-size: 24px;
+  margin: 0 0 4px;
+}
+
+header p {
+  margin: 0 0 16px;
+}
+
+.back-navigation {
+  margin: 0 0 14px;
+}
+
+.back-navigation a {
+  align-items: center;
+  color: #1b4f8a;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: bold;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.back-navigation a:hover {
+  text-decoration: underline;
+}
+
+.back-navigation a:focus-visible {
+  outline: 2px solid #1b4f8a;
+  outline-offset: 3px;
+}
+
+.filters {
+  background: #eee;
+  border: 1px solid #bbb;
+  display: grid;
+  gap: 10px 14px;
+  grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr) minmax(260px, 1.4fr);
+  margin-bottom: 14px;
+  padding: 12px;
+}
+
+.filters label {
+  font-weight: bold;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.filter-field-course input {
+  width: 100%;
+}
+
+.filter-field-course {
+  grid-column: 1 / -1;
+}
+
+.display-options {
+  align-items: center;
+  border: 0;
+  display: grid;
+  gap: 8px 12px;
+  grid-column: 3 / -1;
+  grid-template-columns: auto repeat(2, minmax(0, 1fr));
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.checkbox-label {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.display-options legend {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+.grouped-instructor {
+  width: 360px;
+  max-width: 360px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+input,
+select {
+  border: 1px solid #888;
+  border-radius: 0;
+  box-sizing: border-box;
+  font: inherit;
+  min-height: 28px;
+  padding: 3px 5px;
+}
+
+input {
+  width: 100%;
+}
+
+input[type="checkbox"] {
+  flex: 0 0 auto;
+  height: 16px;
+  margin: 0;
+  width: 16px;
+}
+
+select {
+  min-width: 150px;
+}
+
+#status {
+  font-weight: bold;
+  margin: 0 0 6px;
+}
+
+.pagination {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+button {
+  background: #eee;
+  border: 1px solid #888;
+  border-radius: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 9px;
+}
+
+button:disabled {
+  cursor: default;
+  color: #888;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  border-collapse: collapse;
+  min-width: 650px;
+  width: 100%;
+}
+
+th,
+td {
+  border: 1px solid #aaa;
+  padding: 5px 7px;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  background: #ddd;
+}
+
+.sort-button {
+  background: transparent;
+  border: 0;
+  color: #222;
+  cursor: pointer;
+  font: inherit;
+  font-weight: bold;
+  padding: 0;
+  text-align: left;
+}
+
+.sort-button:hover {
+  text-decoration: underline;
+}
+
+.sort-indicator {
+  display: inline-block;
+  height: 12px;
+  margin-left: 4px;
+  position: relative;
+  vertical-align: -1px;
+  width: 10px;
+}
+
+.sort-indicator::before,
+.sort-indicator::after {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  content: "";
+  left: 1px;
+  position: absolute;
+}
+
+.sort-indicator::before {
+  border-bottom: 5px solid #888;
+  top: 0;
+}
+
+.sort-indicator::after {
+  border-top: 5px solid #888;
+  bottom: 0;
+}
+
+.sort-indicator.sort-ascending::before {
+  border-bottom-color: #1b4f8a;
+}
+
+.sort-indicator.sort-ascending::after,
+.sort-indicator.sort-descending::before {
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+
+.sort-indicator.sort-descending::after {
+  border-top-color: #1b4f8a;
+}
+
+.course-link {
+  color: #0645ad;
+  text-decoration: underline;
+}
+
+.detail-controls {
+  align-items: center;
+  background: #eee;
+  border: 1px solid #bbb;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 8px;
+}
+
+.detail-controls select {
+  min-width: 220px;
+}
+
+.detail-controls .checkbox-label {
+  margin-left: 8px;
+}
+
+.histogram {
+  align-items: flex-start;
+  display: flex;
+  height: 290px;
+  margin: 0 auto;
+  max-width: 592px;
+  padding: 8px 0 0;
+  user-select: none;
+}
+
+.histogram-plot {
+  align-items: end;
+  border: 1px solid #555;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  gap: 3px;
+  height: 250px;
+  min-width: 0;
+  padding: 18px 3px 3px;
+  position: relative;
+}
+
+.histogram-column {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  justify-content: end;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.histogram-count {
+  font-size: 12px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.histogram-bar {
+  background: #a9c1dc;
+  border: 1px solid #7898ba;
+  box-sizing: border-box;
+  min-height: 0;
+  width: 100%;
+}
+
+.histogram-label {
+  background: #fff;
+  font-weight: bold;
+  margin-top: 5px;
+  min-height: 18px;
+  white-space: nowrap;
+}
+
+.histogram-axis-title {
+  font-size: 12px;
+}
+
+.histogram-x-axis-title {
+  bottom: -30px;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+}
+
+.distribution-table {
+  margin: 20px auto 0;
+  max-width: 592px;
+  min-width: 0;
+  width: calc(100% - 8px);
+}
+
+.distribution-table th,
+.distribution-table td {
+  text-align: center;
+}
+
+.distribution-table caption {
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-align: center;
+}
+
+tbody tr:nth-child(even) {
+  background: #f2f2f2;
+}
+
+@media (max-width: 640px) {
+  .page {
+    border-left: 0;
+    border-right: 0;
+    margin: 0;
+  }
+
+  .filters {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filter-field,
+  .filter-field-course,
+  .display-options {
+    width: 100%;
+  }
+
+  .display-options {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-left: 0;
+  }
+
+  input,
+  select {
+    max-width: none;
+    width: 100%;
+  }
+
+  .histogram {
+    height: 290px;
+    overflow-x: auto;
+  }
+
+  .histogram-plot {
+    flex-basis: 500px;
+  }
+}
