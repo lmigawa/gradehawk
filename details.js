@@ -16,7 +16,11 @@ const detailControls = document.querySelector("#detail-controls");
 const semesterFilter = document.querySelector("#semester-filter");
 const allSemestersFilter = document.querySelector("#all-semesters-filter");
 const sectionFilter = document.querySelector("#section-filter");
+const sectionFilterLabel = document.querySelector("#section-filter-label");
 const groupedFilter = document.querySelector("#grouped-filter");
+const instructorSectionsFilter = document.querySelector(
+  "#instructor-sections-filter",
+);
 const gradeOrder = [
   "A+",
   "A",
@@ -60,7 +64,13 @@ function compareSemesters(a, b) {
     ["Fall", "Summer", "Spring", "Winter"].indexOf(bSeason);
 }
 
-function navigateToCourse(section, instructor, grouped, semester = currentSemester) {
+function navigateToCourse(
+  section,
+  instructor,
+  grouped,
+  semester = currentSemester,
+  allInstructorSections = false,
+) {
   const parameters = new URLSearchParams({
     courseCode: currentCourseCode,
     semester,
@@ -70,16 +80,21 @@ function navigateToCourse(section, instructor, grouped, semester = currentSemest
   } else {
     parameters.set("section", section);
     parameters.set("instructor", instructor);
+    if (allInstructorSections) {
+      parameters.set("instructorSections", "true");
+    }
   }
   window.location.href = `details.html?${parameters}`;
 }
 
 function populateDetailControls(
   courseCourses,
+  courseSemesterCourses,
   matchingCourses,
   section,
   instructor,
   isGrouped,
+  isInstructorGrouped,
   isAllSemesters,
 ) {
   const semesters = [...new Set(courseCourses.map((course) => course.semester))].sort(
@@ -96,10 +111,15 @@ function populateDetailControls(
   semesterFilter.disabled = isAllSemesters;
   allSemestersFilter.checked = isAllSemesters;
 
+  const sectionCandidates = isAllSemesters
+    ? courseCourses
+    : courseSemesterCourses;
   const sectionOptions = [
     ...new Map(
-      matchingCourses.map((course) => [
-        `${course.section}|${course.instructor}`,
+      sectionCandidates.map((course) => [
+        isInstructorGrouped
+          ? course.instructor
+          : `${course.section}|${course.instructor}`,
         course,
       ]),
     ).values(),
@@ -108,15 +128,20 @@ function populateDetailControls(
   sectionOptions.forEach((course) => {
     const option = document.createElement("option");
     option.value = `${course.section}|${course.instructor}`;
-    option.textContent = `${course.section} — ${course.instructor}`;
+    option.textContent = isInstructorGrouped
+      ? `${course.instructor} — all sections`
+      : `${course.section} — ${course.instructor}`;
     option.selected =
       !isGrouped &&
-      course.section === section &&
-      course.instructor === instructor;
+      (isInstructorGrouped
+        ? course.instructor === instructor
+        : course.section === section && course.instructor === instructor);
     sectionFilter.append(option);
   });
   sectionFilter.disabled = isGrouped;
+  sectionFilterLabel.textContent = isInstructorGrouped ? "Instructor:" : "Section:";
   groupedFilter.checked = isGrouped;
+  instructorSectionsFilter.checked = isInstructorGrouped;
   detailControls.hidden = false;
 }
 
@@ -255,10 +280,16 @@ async function loadCourseDetails() {
   const semester = query.get("semester");
   const instructor = query.get("instructor");
   const isGrouped = query.get("grouped") === "true";
+  const isInstructorGrouped = query.get("instructorSections") === "true";
 
   const isAllSemesters = semester === "all";
 
-  if (!courseCode || !semester || (!instructor && !isGrouped)) {
+  if (
+    !courseCode ||
+    !semester ||
+    (!instructor && !isGrouped) ||
+    (isInstructorGrouped && !instructor)
+  ) {
     showError("The course details link is incomplete.");
     return;
   }
@@ -277,13 +308,15 @@ async function loadCourseDetails() {
       : courseCourses.filter((item) => item.semester === semester);
     const matchingCourses = isGrouped
       ? courseSemesterCourses
-      : courseSemesterCourses.filter(
-          (item) => item.section === section && item.instructor === instructor,
-        );
+      : isInstructorGrouped
+        ? courseSemesterCourses.filter((item) => item.instructor === instructor)
+        : courseSemesterCourses.filter(
+            (item) => item.section === section && item.instructor === instructor,
+          );
     const course = matchingCourses[0];
-    const groupedCourses = isGrouped
+    const groupedCourses = isGrouped || isInstructorGrouped
       ? [...new Map(
-          courseSemesterCourses.map((item) => [
+          (isGrouped ? courseSemesterCourses : matchingCourses).map((item) => [
             `${item.semester}|${item.section}|${item.instructor}`,
             item,
           ]),
@@ -297,19 +330,23 @@ async function loadCourseDetails() {
 
     populateDetailControls(
       courseCourses,
+      courseSemesterCourses,
       matchingCourses,
       section,
       instructor,
       isGrouped,
+      isInstructorGrouped,
       isAllSemesters,
     );
-    const fullCode = isGrouped
+    const fullCode = isGrouped || isInstructorGrouped
       ? course.courseCode
       : course.section
         ? `${course.courseCode}:${course.section}`
         : course.courseCode;
-    const shouldAggregate = isGrouped || isAllSemesters;
-    const displayCourses = isGrouped ? groupedCourses : matchingCourses;
+    const shouldAggregate =
+      isGrouped || isInstructorGrouped || isAllSemesters;
+    const displayCourses =
+      isGrouped || isInstructorGrouped ? groupedCourses : matchingCourses;
     const displayCourse = shouldAggregate
       ? {
           ...course,
@@ -327,6 +364,7 @@ async function loadCourseDetails() {
     document.title = `${fullCode} - GradeHawk`;
     const scopeLabels = [
       isGrouped ? "all sections" : "",
+      isInstructorGrouped ? "all sections for instructor" : "",
       isAllSemesters ? "all semesters" : "",
     ].filter(Boolean);
     courseHeading.textContent =
@@ -346,34 +384,46 @@ async function loadCourseDetails() {
 
 sectionFilter.addEventListener("change", () => {
   const [section, instructor] = sectionFilter.value.split("|");
-  navigateToCourse(section, instructor, false);
+  navigateToCourse(
+    section,
+    instructor,
+    false,
+    currentSemester,
+    instructorSectionsFilter.checked,
+  );
 });
 
 semesterFilter.addEventListener("change", () => {
   const [section, instructor] = sectionFilter.value.split("|");
   const selectedSemester = semesterFilter.value;
+  const isInstructorGrouped =
+    instructorSectionsFilter.checked && !groupedFilter.checked;
   const professorTaughtSemester = allCourses.some(
     (course) =>
       course.courseCode === currentCourseCode &&
       course.semester === selectedSemester &&
-      course.section === section &&
-      course.instructor === instructor,
+      course.instructor === instructor &&
+      (isInstructorGrouped || course.section === section),
   );
   navigateToCourse(
     section,
     instructor,
     groupedFilter.checked || !professorTaughtSemester,
     selectedSemester,
+    isInstructorGrouped && professorTaughtSemester,
   );
 });
 
 allSemestersFilter.addEventListener("change", () => {
   const [section, instructor] = sectionFilter.value.split("|");
+  const selectedSemester =
+    semesterFilter.value || semesterFilter.options[0]?.value;
   navigateToCourse(
     section,
     instructor,
     groupedFilter.checked,
-    allSemestersFilter.checked ? "all" : semesterFilter.value,
+    allSemestersFilter.checked ? "all" : selectedSemester,
+    instructorSectionsFilter.checked && !groupedFilter.checked,
   );
 });
 
@@ -384,7 +434,24 @@ groupedFilter.addEventListener("change", () => {
   }
 
   const [section, instructor] = sectionFilter.value.split("|");
-  navigateToCourse(section, instructor, false, currentSemester);
+  navigateToCourse(
+    section,
+    instructor,
+    false,
+    currentSemester,
+    instructorSectionsFilter.checked,
+  );
+});
+
+instructorSectionsFilter.addEventListener("change", () => {
+  const [section, instructor] = sectionFilter.value.split("|");
+  navigateToCourse(
+    section,
+    instructor,
+    false,
+    currentSemester,
+    instructorSectionsFilter.checked,
+  );
 });
 
 retryButton.addEventListener("click", loadCourseDetails);

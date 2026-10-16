@@ -90,6 +90,8 @@ course's full history across all sections.
 On a course detail page, use the section selector to switch among sections
 from the same course and semester. Use `All sections` to switch between an
 individual section distribution and the combined course distribution.
+Use `All sections for this instructor` to combine every section taught by the
+selected instructor within the selected semester.
 Use the semester selector to switch among semesters, or enable `All semesters`
 to combine the selected section across the course's full history. This can be
 combined with `All sections` to show the distribution across every section and
