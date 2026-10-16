@@ -70,6 +70,15 @@ When a distribution contains no plus/minus categories, its average is rounded
 against the base A/B/C/D/F scale rather than being reported as a plus/minus
 grade.
 
+Use the `Compare` checkboxes to select up to four results for a side-by-side
+comparison. The comparison shows enrollment, average and median grade, and
+grade-band and withdrawal percentages. Percentages include withdrawals in the
+total so results with different class sizes can be compared consistently.
+
+Use `Display options` above the results to choose which result columns are
+visible, including the `Compare` column. These preferences are saved in the
+browser and can be restored with `Reset columns`.
+
 Results default to semester newest first. Click any table header to sort
 ascending, click again to sort descending, and click a third time to restore
 the default semester-newest-first order.

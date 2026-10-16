@@ -59,6 +59,83 @@
           </label>
         </fieldset>
       </form>
+      <section class="column-settings">
+        <button
+          id="column-settings-toggle"
+          class="settings-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="column-settings-panel"
+        >
+          Display options
+        </button>
+        <div id="column-settings-panel" class="column-settings-panel" hidden>
+          <fieldset>
+            <legend>Show result columns</legend>
+            <label class="checkbox-label" for="show-compare">
+              <input id="show-compare" type="checkbox" data-column-toggle="compare" />
+              Compare
+            </label>
+            <label class="checkbox-label" for="show-course">
+              <input id="show-course" type="checkbox" data-column-toggle="course" />
+              Course
+            </label>
+            <label class="checkbox-label" for="show-title">
+              <input id="show-title" type="checkbox" data-column-toggle="title" />
+              Course title
+            </label>
+            <label class="checkbox-label" for="show-semester">
+              <input id="show-semester" type="checkbox" data-column-toggle="semester" />
+              Semester
+            </label>
+            <label class="checkbox-label" for="show-instructor">
+              <input id="show-instructor" type="checkbox" data-column-toggle="instructor" />
+              Instructor
+            </label>
+            <label class="checkbox-label" for="show-average">
+              <input id="show-average" type="checkbox" data-column-toggle="average" />
+              Average grade
+            </label>
+            <label class="checkbox-label" for="show-median">
+              <input id="show-median" type="checkbox" data-column-toggle="median" />
+              Median grade
+            </label>
+          </fieldset>
+          <button id="reset-column-settings" class="secondary-button" type="button">
+            Reset columns
+          </button>
+        </div>
+      </section>
+      <section id="comparison-panel" class="comparison-panel" aria-labelledby="comparison-heading" hidden>
+        <div class="comparison-heading">
+          <div>
+            <h2 id="comparison-heading">Course and instructor comparison</h2>
+            <p id="comparison-status" class="comparison-status">
+              Select at least two results to compare them.
+            </p>
+          </div>
+          <button id="clear-comparison" type="button">Clear comparison</button>
+        </div>
+        <div class="table-wrapper">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Course</th>
+                <th scope="col">Scope</th>
+                <th scope="col">Students</th>
+                <th scope="col">Average</th>
+                <th scope="col">Median</th>
+                <th scope="col">A range</th>
+                <th scope="col">B range</th>
+                <th scope="col">C range</th>
+                <th scope="col">D/F</th>
+                <th scope="col">Withdrawn</th>
+              </tr>
+            </thead>
+            <tbody id="comparison-results"></tbody>
+          </table>
+        </div>
+      </section>
       <section aria-live="polite">
         <div class="mobile-sort">
           <label for="mobile-sort">Sort by</label>
@@ -85,37 +162,40 @@
           <table>
             <thead>
               <tr>
-                <th scope="col">
+                <th scope="col" data-column="compare">
+                  <span class="selection-heading">Compare</span>
+                </th>
+                <th scope="col" data-column="course">
                   <button class="sort-button" type="button" data-sort-key="courseCode">
                     Course
                     <span class="sort-indicator" aria-hidden="true"></span>
                   </button>
                 </th>
-                <th scope="col">
+                <th scope="col" data-column="title">
                   <button class="sort-button" type="button" data-sort-key="courseTitle">
                     Course Title
                     <span class="sort-indicator" aria-hidden="true"></span>
                   </button>
                 </th>
-                <th scope="col">
+                <th scope="col" data-column="semester">
                   <button class="sort-button" type="button" data-sort-key="semester">
                     Semester
                     <span class="sort-indicator" aria-hidden="true"></span>
                   </button>
                 </th>
-                <th scope="col">
+                <th scope="col" data-column="instructor">
                   <button class="sort-button" type="button" data-sort-key="instructor">
                     Instructor
                     <span class="sort-indicator" aria-hidden="true"></span>
                   </button>
                 </th>
-                <th scope="col">
+                <th scope="col" data-column="average">
                   <button class="sort-button" type="button" data-sort-key="averageGrade">
                     Average Grade
                     <span class="sort-indicator" aria-hidden="true"></span>
                   </button>
                 </th>
-                <th scope="col">
+                <th scope="col" data-column="median">
                   <button class="sort-button" type="button" data-sort-key="medianGrade">
                     Median Grade
                     <span class="sort-indicator" aria-hidden="true"></span>

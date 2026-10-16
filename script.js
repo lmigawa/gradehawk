@@ -12,11 +12,28 @@ const previousPage = document.querySelector("#previous-page");
 const nextPage = document.querySelector("#next-page");
 const pageStatus = document.querySelector("#page-status");
 const mobileSort = document.querySelector("#mobile-sort");
+const comparisonPanel = document.querySelector("#comparison-panel");
+const comparisonStatus = document.querySelector("#comparison-status");
+const comparisonResults = document.querySelector("#comparison-results");
+const clearComparison = document.querySelector("#clear-comparison");
 const defaultSortKey = "semester";
 const defaultSortDirection = -1;
 let currentPage = 1;
 let sortKey = defaultSortKey;
 let sortDirection = defaultSortDirection;
+const selectedComparisons = new Map();
+const maxComparisons = 4;
+const columnStorageKey = "gradehawk-visible-columns";
+const defaultVisibleColumns = {
+  compare: true,
+  course: true,
+  title: true,
+  semester: true,
+  instructor: true,
+  average: true,
+  median: true,
+};
+let visibleColumns = { ...defaultVisibleColumns };
 const validPageSizes = new Set(["10", "25", "50", "100"]);
 const validSortKeys = new Set([
   "courseCode",
@@ -26,6 +43,41 @@ const validSortKeys = new Set([
   "averageGrade",
   "medianGrade",
 ]);
+
+function applyColumnVisibility() {
+  document.querySelectorAll("[data-column]").forEach((element) => {
+    element.classList.toggle(
+      "column-hidden",
+      visibleColumns[element.dataset.column] === false,
+    );
+  });
+  document.querySelectorAll("[data-column-toggle]").forEach((input) => {
+    input.checked = visibleColumns[input.dataset.columnToggle] !== false;
+  });
+}
+
+function loadColumnVisibility() {
+  try {
+    const savedColumns = JSON.parse(localStorage.getItem(columnStorageKey));
+    if (savedColumns && typeof savedColumns === "object") {
+      Object.keys(defaultVisibleColumns).forEach((column) => {
+        if (typeof savedColumns[column] === "boolean") {
+          visibleColumns[column] = savedColumns[column];
+        }
+      });
+    }
+  } catch (error) {
+    console.warn("Could not restore visible column settings.", error);
+  }
+}
+
+function saveColumnVisibility() {
+  try {
+    localStorage.setItem(columnStorageKey, JSON.stringify(visibleColumns));
+  } catch (error) {
+    console.warn("Could not save visible column settings.", error);
+  }
+}
 
 const gradeOrder = [
   "A+",
@@ -342,6 +394,101 @@ function getSummaryGrade(grades, summaryType) {
   return gradedEntries[gradedEntries.length - 1].grade;
 }
 
+function getCourseKey(course) {
+  return [
+    course.courseCode,
+    course.section,
+    course.semester,
+    course.instructor,
+    course.grouped ? "grouped" : "",
+    course.groupedSemesters ? "all-semesters" : "",
+  ].join("|");
+}
+
+function getComparisonMetrics(course) {
+  const total = Object.values(course.grades).reduce(
+    (sum, count) => sum + (Number.isFinite(count) ? count : 0),
+    0,
+  );
+  const percentage = (grades) =>
+    total
+      ? `${(
+          (grades.reduce((sum, grade) => sum + (course.grades[grade] || 0), 0) /
+            total) *
+          100
+        ).toFixed(1)}%`
+      : "N/A";
+  return {
+    total,
+    aRange: percentage(["A+", "A", "A-"]),
+    bRange: percentage(["B+", "B", "B-"]),
+    cRange: percentage(["C+", "C", "C-"]),
+    dfRange: percentage(["D+", "D", "D-", "D & F", "F"]),
+    withdrawn: percentage(["W"]),
+  };
+}
+
+function renderComparison() {
+  comparisonResults.replaceChildren();
+  const selectedCourses = [...selectedComparisons.values()];
+  comparisonPanel.hidden = selectedCourses.length === 0;
+  comparisonStatus.textContent =
+    selectedCourses.length < 2
+      ? "Select at least two results to compare them."
+      : `${selectedCourses.length} results selected. Percentages include withdrawals in the total.`;
+  clearComparison.disabled = selectedCourses.length === 0;
+
+  selectedCourses.forEach((course) => {
+    const metrics = getComparisonMetrics(course);
+    const row = document.createElement("tr");
+    const courseCell = document.createElement("td");
+    const courseLink = document.createElement("a");
+    courseLink.className = "course-link";
+    courseLink.textContent = course.section
+      ? `${course.courseCode}:${course.section}`
+      : course.courseCode;
+    const detailParameters = course.grouped
+      ? {
+          courseCode: course.courseCode,
+          semester: course.groupedSemesters ? "all" : course.semester,
+          grouped: "true",
+        }
+      : {
+          courseCode: course.courseCode,
+          section: course.section,
+          semester: course.groupedSemesters ? "all" : course.semester,
+          instructor: course.instructor,
+        };
+    courseLink.href = `details.html?${new URLSearchParams(detailParameters)}`;
+    courseCell.dataset.label = "Course";
+    courseCell.append(courseLink);
+    row.append(courseCell);
+
+    [
+      [
+        "Scope",
+        course.grouped
+          ? `${course.semester} — All sections`
+          : `${course.semester} — ${course.instructor}`,
+      ],
+      ["Students", metrics.total.toLocaleString()],
+      ["Average", course.averageGrade || "N/A"],
+      ["Median", course.medianGrade || "N/A"],
+      ["A range", metrics.aRange],
+      ["B range", metrics.bRange],
+      ["C range", metrics.cRange],
+      ["D/F", metrics.dfRange],
+      ["Withdrawn", metrics.withdrawn],
+    ].forEach(([label, value]) => {
+      const cell = document.createElement("td");
+      cell.dataset.label = label;
+      cell.textContent = value;
+      row.append(cell);
+    });
+    comparisonResults.append(row);
+  });
+}
+
 function compareSemesters(a, b) {
   const [aSeason, aYear] = a.split(" ");
   const [bSeason, bYear] = b.split(" ");
@@ -385,7 +532,7 @@ function renderCourses(matches) {
     pagination.hidden = true;
     const row = document.createElement("tr");
     const cell = document.createElement("td");
-    cell.colSpan = 6;
+    cell.colSpan = Object.values(visibleColumns).filter(Boolean).length;
     cell.textContent = "No matching courses found.";
     row.append(cell);
     resultsBody.append(row);
@@ -399,7 +546,33 @@ function renderCourses(matches) {
 
   pageMatches.forEach((course) => {
     const row = document.createElement("tr");
+    const selectionCell = document.createElement("td");
+    selectionCell.className = "comparison-selection";
+    selectionCell.dataset.column = "compare";
+    selectionCell.dataset.label = "Compare";
+    const selection = document.createElement("input");
+    selection.type = "checkbox";
+    selection.setAttribute(
+      "aria-label",
+      `Compare ${course.courseCode} ${course.semester}`,
+    );
+    const courseKey = getCourseKey(course);
+    selection.checked = selectedComparisons.has(courseKey);
+    selection.disabled =
+      !selection.checked && selectedComparisons.size >= maxComparisons;
+    selection.addEventListener("change", () => {
+      if (selection.checked) {
+        selectedComparisons.set(courseKey, course);
+      } else {
+        selectedComparisons.delete(courseKey);
+      }
+      renderComparison();
+      renderCourses(matches);
+    });
+    selectionCell.append(selection);
+    row.append(selectionCell);
     const courseCell = document.createElement("td");
+    courseCell.dataset.column = "course";
     const courseLink = document.createElement("a");
     courseLink.className = "course-link";
     courseLink.textContent = course.section
@@ -430,24 +603,27 @@ function renderCourses(matches) {
     row.append(courseCell);
 
     [
-      ["course-title", "Course title", course.courseTitle],
-      ["course-semester", "Semester", course.semester],
+      ["course-title", "title", "Course title", course.courseTitle],
+      ["course-semester", "semester", "Semester", course.semester],
       [
         `course-instructor${course.grouped ? " grouped-instructor" : ""}`,
+        "instructor",
         "Instructor",
         course.instructor,
       ],
-      ["course-average", "Average grade", course.averageGrade || "N/A"],
-      ["course-median", "Median grade", course.medianGrade || "N/A"],
-    ].forEach(([className, label, value]) => {
+      ["course-average", "average", "Average grade", course.averageGrade || "N/A"],
+      ["course-median", "median", "Median grade", course.medianGrade || "N/A"],
+    ].forEach(([className, column, label, value]) => {
       const cell = document.createElement("td");
       cell.className = className;
+      cell.dataset.column = column;
       cell.dataset.label = label;
       cell.textContent = value;
       row.append(cell);
     });
     resultsBody.append(row);
   });
+  applyColumnVisibility();
 
   pageMatches.forEach((course, index) => {
     if (!course.grouped || course.instructorCount <= 1) {
@@ -539,6 +715,33 @@ nextPage.addEventListener("click", () => {
 document.querySelector("#filters").addEventListener("submit", (event) => {
   event.preventDefault();
 });
+clearComparison.addEventListener("click", () => {
+  selectedComparisons.clear();
+  renderComparison();
+  updateResults();
+});
+const columnSettingsToggle = document.querySelector("#column-settings-toggle");
+const columnSettingsPanel = document.querySelector("#column-settings-panel");
+const resetColumnSettings = document.querySelector("#reset-column-settings");
+columnSettingsToggle.addEventListener("click", () => {
+  const isExpanded = columnSettingsToggle.getAttribute("aria-expanded") === "true";
+  columnSettingsToggle.setAttribute("aria-expanded", String(!isExpanded));
+  columnSettingsPanel.hidden = isExpanded;
+});
+document.querySelectorAll("[data-column-toggle]").forEach((input) => {
+  input.addEventListener("change", () => {
+    visibleColumns[input.dataset.columnToggle] = input.checked;
+    saveColumnVisibility();
+    applyColumnVisibility();
+    updateResults();
+  });
+});
+resetColumnSettings.addEventListener("click", () => {
+  visibleColumns = { ...defaultVisibleColumns };
+  saveColumnVisibility();
+  applyColumnVisibility();
+  updateResults();
+});
 
 function updateSortIndicators() {
   document.querySelectorAll(".sort-button").forEach((sortButton) => {
@@ -617,4 +820,7 @@ window.addEventListener("popstate", () => {
   updateResults();
 });
 updateGroupingControls();
+loadColumnVisibility();
+applyColumnVisibility();
+renderComparison();
 loadCourses();

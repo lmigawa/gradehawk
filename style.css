@@ -231,6 +231,63 @@ select {
   display: none;
 }
 
+.column-settings {
+  margin: 0 0 14px;
+}
+
+.settings-toggle {
+  background: #eee;
+  border-color: #999;
+  color: #222;
+}
+
+.settings-toggle[aria-expanded="true"] {
+  background: #5b574f;
+  color: #fff;
+}
+
+.column-settings-panel {
+  align-items: end;
+  background: #eee;
+  border: 1px solid #d0d0d0;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-top: 4px;
+  padding: 10px 12px;
+}
+
+.column-settings-panel[hidden] {
+  display: none;
+}
+
+.column-settings-panel fieldset {
+  border: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0;
+  padding: 0;
+}
+
+.column-settings-panel legend {
+  color: #5b574f;
+  font-weight: bold;
+  margin-bottom: 6px;
+  padding: 0;
+  width: 100%;
+}
+
+.secondary-button {
+  background: transparent;
+  color: #5b574f;
+  white-space: nowrap;
+}
+
+.column-hidden {
+  display: none !important;
+}
+
 .status-message {
   align-items: center;
   display: flex;
@@ -251,6 +308,48 @@ select {
 .status-message.is-error,
 .error-message {
   color: #8a1c1c;
+}
+
+.comparison-panel {
+  border: 1px solid #d0d0d0;
+  border-top: 4px solid #ffcd00;
+  margin: 0 0 14px;
+  padding: 10px 12px 12px;
+}
+
+.comparison-heading {
+  align-items: start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.comparison-heading h2 {
+  color: #5b574f;
+  font-size: 18px;
+  margin: 0;
+}
+
+.comparison-status {
+  margin: 3px 0 8px;
+}
+
+.comparison-table {
+  min-width: 800px;
+}
+
+.comparison-table td:not(:first-child) {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.comparison-selection {
+  text-align: center;
+  width: 54px;
+}
+
+.selection-heading {
+  white-space: nowrap;
 }
 
 .error-message {
@@ -576,11 +675,34 @@ tbody tr:nth-child(even) {
     gap: 2px;
   }
 
+  .comparison-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .comparison-heading button {
+    align-self: flex-start;
+  }
+
   .mobile-sort {
     align-items: center;
     display: flex;
     gap: 8px;
     margin: 0 0 10px;
+  }
+
+  .column-settings-panel {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .column-settings-panel fieldset {
+    flex-direction: column;
+  }
+
+  .secondary-button {
+    align-self: flex-start;
   }
 
   .mobile-sort label {
@@ -636,12 +758,22 @@ tbody tr:nth-child(even) {
     flex-basis: 500px;
   }
 
+  .comparison-table {
+    min-width: 0;
+  }
+
   .table-wrapper {
     overflow: visible;
   }
 
   table {
     min-width: 0;
+  }
+
+  .table-wrapper > table:not(.comparison-table),
+  .comparison-table {
+    table-layout: fixed;
+    width: 100%;
   }
 
   thead {
@@ -672,6 +804,7 @@ tbody tr:nth-child(even) {
     gap: 10px;
     justify-content: space-between;
     min-height: 24px;
+    overflow-wrap: anywhere;
     padding: 6px 8px;
   }
 
@@ -696,6 +829,84 @@ tbody tr:nth-child(even) {
   tbody td:first-child::before {
     font-size: 12px;
     font-weight: bold;
+  }
+
+  #course-results tr {
+    position: relative;
+  }
+
+  #course-results td.comparison-selection {
+    background: transparent;
+    border-bottom: 0;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+    height: 37px;
+    padding: 0 8px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+    z-index: 1;
+  }
+
+  #course-results td.comparison-selection::before {
+    content: none;
+  }
+
+  #course-results td.comparison-selection input {
+    height: 20px;
+    width: 20px;
+  }
+
+  #course-results td:nth-child(2) {
+    padding-right: 44px;
+  }
+
+  .comparison-table tbody tr {
+    display: grid;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .comparison-table tbody td {
+    min-width: 0;
+  }
+
+  .comparison-table tbody td:first-child,
+  .comparison-table tbody td:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+
+  .comparison-table tbody td:first-child {
+    background: #f2f2f2;
+  }
+
+  .comparison-table tbody td:nth-child(2) {
+    color: #555;
+    font-size: 13px;
+    font-weight: normal;
+  }
+
+  .comparison-table tbody td:nth-child(n + 3) {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+    min-height: 54px;
+    padding: 7px 5px;
+    text-align: center;
+  }
+
+  .comparison-table tbody td:nth-child(n + 3)::before {
+    flex: none;
+    font-size: 11px;
+    text-transform: uppercase;
+  }
+
+  .comparison-table tbody td:nth-child(n + 3):not(:last-child) {
+    border-bottom: 1px solid #ddd;
   }
 
   .distribution-table {
