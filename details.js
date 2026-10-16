@@ -351,7 +351,20 @@ sectionFilter.addEventListener("change", () => {
 
 semesterFilter.addEventListener("change", () => {
   const [section, instructor] = sectionFilter.value.split("|");
-  navigateToCourse(section, instructor, groupedFilter.checked, semesterFilter.value);
+  const selectedSemester = semesterFilter.value;
+  const professorTaughtSemester = allCourses.some(
+    (course) =>
+      course.courseCode === currentCourseCode &&
+      course.semester === selectedSemester &&
+      course.section === section &&
+      course.instructor === instructor,
+  );
+  navigateToCourse(
+    section,
+    instructor,
+    groupedFilter.checked || !professorTaughtSemester,
+    selectedSemester,
+  );
 });
 
 allSemestersFilter.addEventListener("change", () => {
