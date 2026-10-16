@@ -537,7 +537,22 @@ th {
 
 .distribution-table th,
 .distribution-table td {
-  text-align: center;
+  padding: 7px 10px;
+}
+
+.distribution-table th:first-child,
+.distribution-table td:first-child {
+  text-align: left;
+}
+
+.distribution-table th:last-child,
+.distribution-table td:last-child {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.distribution-table tbody tr:nth-child(even) {
+  background: #f4f4f4;
 }
 
 .distribution-table caption {
@@ -681,6 +696,72 @@ tbody tr:nth-child(even) {
   tbody td:first-child::before {
     font-size: 12px;
     font-weight: bold;
+  }
+
+  .distribution-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    display: table;
+    margin: 20px 0 0;
+    width: 100%;
+  }
+
+  .distribution-table thead {
+    display: table-header-group;
+  }
+
+  .distribution-table tbody {
+    display: table-row-group;
+  }
+
+  .distribution-table tr {
+    display: table-row;
+    margin: 0;
+  }
+
+  .distribution-table th,
+  .distribution-table td {
+    display: table-cell;
+    min-height: 0;
+    padding: 9px 10px;
+  }
+
+  .distribution-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .distribution-table th:first-child,
+  .distribution-table td:first-child {
+    text-align: left;
+  }
+
+  .distribution-table th:last-child,
+  .distribution-table td:last-child {
+    text-align: right;
+  }
+
+  .distribution-table tbody tr:nth-child(even) {
+    background: #f4f4f4;
+  }
+
+  .distribution-table tbody td {
+    border-bottom: 1px solid #ddd;
+  }
+
+  .distribution-table tbody td::before {
+    content: none;
+  }
+
+  .distribution-table tbody td:first-child {
+    background: transparent;
+    font-size: inherit;
+    font-weight: normal;
+  }
+
+  .distribution-table tbody tr:last-child td {
+    border-bottom: 0;
   }
 
   .grouped-instructor {
