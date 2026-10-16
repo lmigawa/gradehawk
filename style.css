@@ -1,5 +1,5 @@
 body {
-  background: #f7f7f7;
+  background: #fff;
   color: #222;
   font-family: Arial, Verdana, sans-serif;
   font-size: 14px;
@@ -8,7 +8,7 @@ body {
 }
 
 .skip-link {
-  background: #1b4f8a;
+  background: #000;
   color: #fff;
   left: 8px;
   padding: 6px 10px;
@@ -24,14 +24,14 @@ body {
 
 .page {
   background: #fff;
-  border: 1px solid #bbb;
+  border: 1px solid #d6d6d6;
   margin: 18px auto;
   max-width: 1100px;
   padding: 12px 16px 20px;
 }
 
 h1 {
-  color: #1b4f8a;
+  color: #000;
   font-size: 24px;
   margin: 0 0 4px;
 }
@@ -48,7 +48,7 @@ header p {
 }
 
 .info-link {
-  color: #1b4f8a;
+  color: #5b574f;
   font-weight: bold;
 }
 
@@ -57,8 +57,8 @@ header p {
 }
 
 .info-page h2 {
-  border-bottom: 1px solid #ddd;
-  color: #1b4f8a;
+  border-bottom: 3px solid #ffcd00;
+  color: #5b574f;
   font-size: 18px;
   margin: 22px 0 8px;
   padding-bottom: 3px;
@@ -91,7 +91,7 @@ header p {
 
 .back-navigation a {
   align-items: center;
-  color: #1b4f8a;
+  color: #5b574f;
   display: inline-flex;
   font-size: 14px;
   font-weight: bold;
@@ -104,13 +104,14 @@ header p {
 }
 
 .back-navigation a:focus-visible {
-  outline: 2px solid #1b4f8a;
+  outline: 2px solid #ffcd00;
   outline-offset: 3px;
 }
 
 .filters {
   background: #eee;
-  border: 1px solid #bbb;
+  border: 1px solid #d0d0d0;
+  border-top: 4px solid #ffcd00;
   display: grid;
   gap: 10px 14px;
   grid-template-columns: minmax(0, 2fr) minmax(150px, 1fr) minmax(260px, 1.4fr);
@@ -157,6 +158,7 @@ header p {
 }
 
 .display-options legend {
+  color: #5b574f;
   font-size: 14px;
   font-weight: bold;
   margin: 0;
@@ -172,7 +174,7 @@ header p {
 
 input,
 select {
-  border: 1px solid #888;
+  border: 1px solid #999;
   border-radius: 0;
   box-sizing: border-box;
   font: inherit;
@@ -210,7 +212,7 @@ select {
 .loading-indicator {
   animation: loading-spin 800ms linear infinite;
   border: 2px solid #bbb;
-  border-right-color: #1b4f8a;
+  border-right-color: #ffcd00;
   border-radius: 50%;
   display: inline-block;
   height: 14px;
@@ -256,8 +258,9 @@ select {
 }
 
 button {
-  background: #eee;
-  border: 1px solid #888;
+  background: #5b574f;
+  border: 1px solid #4a4741;
+  color: #fff;
   border-radius: 0;
   cursor: pointer;
   font: inherit;
@@ -266,14 +269,14 @@ button {
 
 button:disabled {
   cursor: default;
-  color: #888;
+  color: #c9c7c2;
 }
 
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 select:focus-visible {
-  outline: 2px solid #1b4f8a;
+  outline: 2px solid #ffcd00;
   outline-offset: 2px;
 }
 
@@ -309,13 +312,14 @@ td {
 }
 
 th {
-  background: #ddd;
+  background: #5b574f;
+  color: #fff;
 }
 
 .sort-button {
   background: transparent;
   border: 0;
-  color: #222;
+  color: #fff;
   cursor: pointer;
   font: inherit;
   font-weight: bold;
@@ -356,7 +360,7 @@ th {
 }
 
 .sort-indicator.sort-ascending::before {
-  border-bottom-color: #1b4f8a;
+  border-bottom-color: #ffcd00;
 }
 
 .sort-indicator.sort-ascending::after,
@@ -366,7 +370,7 @@ th {
 }
 
 .sort-indicator.sort-descending::after {
-  border-top-color: #1b4f8a;
+  border-top-color: #ffcd00;
 }
 
 .course-link {
@@ -377,7 +381,8 @@ th {
 .detail-controls {
   align-items: center;
   background: #eee;
-  border: 1px solid #bbb;
+  border: 1px solid #d0d0d0;
+  border-top: 4px solid #ffcd00;
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
@@ -410,7 +415,8 @@ th {
 
 .summary-grid > div {
   background: #eee;
-  border: 1px solid #bbb;
+  border: 1px solid #d0d0d0;
+  border-top: 3px solid #ffcd00;
   padding: 8px;
 }
 
@@ -467,8 +473,8 @@ th {
 }
 
 .histogram-bar {
-  background: #a9c1dc;
-  border: 1px solid #7898ba;
+  background: #ffcd00;
+  border: 1px solid #c7a600;
   box-sizing: border-box;
   min-height: 0;
   width: 100%;
@@ -512,7 +518,7 @@ th {
 }
 
 tbody tr:nth-child(even) {
-  background: #f2f2f2;
+  background: #f4f4f4;
 }
 
 @media (max-width: 640px) {
