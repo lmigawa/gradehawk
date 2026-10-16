@@ -227,6 +227,10 @@ select {
   margin: 0 0 6px;
 }
 
+.mobile-sort {
+  display: none;
+}
+
 .status-message {
   align-items: center;
   display: flex;
@@ -555,6 +559,21 @@ tbody tr:nth-child(even) {
     align-items: flex-start;
     flex-direction: column;
     gap: 2px;
+  }
+
+  .mobile-sort {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin: 0 0 10px;
+  }
+
+  .mobile-sort label {
+    font-weight: bold;
+  }
+
+  .mobile-sort select {
+    flex: 1;
   }
 
   .page {

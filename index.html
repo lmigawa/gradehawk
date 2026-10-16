@@ -56,6 +56,23 @@
         </fieldset>
       </form>
       <section aria-live="polite">
+        <div class="mobile-sort">
+          <label for="mobile-sort">Sort by</label>
+          <select id="mobile-sort">
+            <option value="semester:desc">Default order (semester, newest first)</option>
+            <option value="courseCode:asc">Course, A-Z</option>
+            <option value="courseCode:desc">Course, Z-A</option>
+            <option value="courseTitle:asc">Course title, A-Z</option>
+            <option value="courseTitle:desc">Course title, Z-A</option>
+            <option value="semester:asc">Semester, oldest first</option>
+            <option value="instructor:asc">Instructor, A-Z</option>
+            <option value="instructor:desc">Instructor, Z-A</option>
+            <option value="averageGrade:asc">Average grade, low to high</option>
+            <option value="averageGrade:desc">Average grade, high to low</option>
+            <option value="medianGrade:asc">Median grade, low to high</option>
+            <option value="medianGrade:desc">Median grade, high to low</option>
+          </select>
+        </div>
         <p id="status" class="status-message" role="status" aria-live="polite">
           <span class="loading-indicator" aria-hidden="true"></span>
           Loading courses...

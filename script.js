@@ -11,9 +11,12 @@ const pagination = document.querySelector("#pagination");
 const previousPage = document.querySelector("#previous-page");
 const nextPage = document.querySelector("#next-page");
 const pageStatus = document.querySelector("#page-status");
+const mobileSort = document.querySelector("#mobile-sort");
+const defaultSortKey = "semester";
+const defaultSortDirection = -1;
 let currentPage = 1;
-let sortKey = null;
-let sortDirection = 0;
+let sortKey = defaultSortKey;
+let sortDirection = defaultSortDirection;
 const validPageSizes = new Set(["10", "25", "50", "100"]);
 const validSortKeys = new Set([
   "courseCode",
@@ -78,10 +81,17 @@ function getSemesters() {
       if (yearDifference !== 0) {
         return yearDifference;
       }
+
       return ["Fall", "Summer", "Spring", "Winter"].indexOf(aSeason) -
         ["Fall", "Summer", "Spring", "Winter"].indexOf(bSeason);
     },
   );
+}
+
+function updateMobileSort() {
+  mobileSort.value = sortKey
+    ? `${sortKey}:${sortDirection === -1 ? "desc" : "asc"}`
+    : "";
 }
 
 function populateSemesters() {
@@ -116,11 +126,16 @@ function applyUrlState() {
     groupSemesters.checked || parameters.get("groupSections") === "1";
 
   const requestedSortKey = parameters.get("sort");
-  sortKey = validSortKeys.has(requestedSortKey) ? requestedSortKey : null;
-  sortDirection =
-    sortKey && parameters.get("direction") === "desc" ? -1 : sortKey ? 1 : 0;
+  if (validSortKeys.has(requestedSortKey)) {
+    sortKey = requestedSortKey;
+    sortDirection = parameters.get("direction") === "desc" ? -1 : 1;
+  } else {
+    sortKey = defaultSortKey;
+    sortDirection = defaultSortDirection;
+  }
   updateGroupingControls();
   updateSortIndicators();
+  updateMobileSort();
 }
 
 function updateUrlState() {
@@ -140,7 +155,10 @@ function updateUrlState() {
   if (groupSemesters.checked) {
     parameters.set("groupSemesters", "1");
   }
-  if (sortKey) {
+  if (
+    sortKey &&
+    (sortKey !== defaultSortKey || sortDirection !== defaultSortDirection)
+  ) {
     parameters.set("sort", sortKey);
     if (sortDirection === -1) {
       parameters.set("direction", "desc");
@@ -564,15 +582,29 @@ document.querySelectorAll(".sort-button").forEach((button) => {
     } else if (sortDirection === 1) {
       sortDirection = -1;
     } else {
-      sortKey = null;
-      sortDirection = 0;
+      sortKey = defaultSortKey;
+      sortDirection = defaultSortDirection;
     }
 
     updateSortIndicators();
+    updateMobileSort();
     currentPage = 1;
     updateUrlState();
     updateResults();
   });
+});
+mobileSort.addEventListener("change", () => {
+  if (!mobileSort.value) {
+    sortKey = defaultSortKey;
+    sortDirection = defaultSortDirection;
+  } else {
+    [sortKey, sortDirection] = mobileSort.value.split(":");
+    sortDirection = sortDirection === "desc" ? -1 : 1;
+  }
+  updateSortIndicators();
+  updateUrlState();
+  currentPage = 1;
+  updateResults();
 });
 window.addEventListener("popstate", () => {
   applyUrlState();

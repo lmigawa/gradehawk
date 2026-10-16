@@ -70,8 +70,9 @@ When a distribution contains no plus/minus categories, its average is rounded
 against the base A/B/C/D/F scale rather than being reported as a plus/minus
 grade.
 
-Click any table header to sort ascending, click again to sort descending, and
-click a third time to restore the default order.
+Results default to semester newest first. Click any table header to sort
+ascending, click again to sort descending, and click a third time to restore
+the default semester-newest-first order.
 
 Click a course code to open a separate page with a histogram showing the
 grade distribution for that exact course section and semester. Zero-count
