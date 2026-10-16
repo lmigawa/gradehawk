@@ -2,6 +2,11 @@ const query = new URLSearchParams(window.location.search);
 const courseHeading = document.querySelector("#course-heading");
 const courseSummary = document.querySelector("#course-summary");
 const errorMessage = document.querySelector("#error-message");
+const summarySection = document.querySelector("#summary-section");
+const summaryStudents = document.querySelector("#summary-students");
+const summaryAverage = document.querySelector("#summary-average");
+const summaryMedian = document.querySelector("#summary-median");
+const summaryCommon = document.querySelector("#summary-common");
 const histogramSection = document.querySelector("#histogram-section");
 const histogram = document.querySelector("#histogram");
 const distributionTableBody = document.querySelector("#distribution-table-body");
@@ -115,6 +120,7 @@ function populateDetailControls(
 
 function showError(message) {
   courseSummary.hidden = true;
+  summarySection.hidden = true;
   errorMessage.textContent = message;
   errorMessage.hidden = false;
 }
@@ -124,6 +130,56 @@ function getStudentCount(grades) {
     (total, count) => total + (Number.isFinite(count) ? count : 0),
     0,
   );
+}
+
+function getSummaryGrade(grades, summaryType) {
+  const gradePoints = {
+    "A+": 4, A: 4, "A-": 3.67, "B+": 3.33, B: 3, "B-": 2.67,
+    "C+": 2.33, C: 2, "C-": 1.67, "D+": 1.33, D: 1, "D-": 0.67,
+    "D & F": 0.5, F: 0,
+  };
+  const entries = gradeOrder
+    .filter((grade) => grade !== "W" && (grades[grade] || 0) > 0)
+    .map((grade) => ({ grade, count: grades[grade] }));
+  const total = entries.reduce((sum, entry) => sum + entry.count, 0);
+  if (!total) {
+    return null;
+  }
+  if (summaryType === "average") {
+    const points = entries.reduce(
+      (sum, entry) => sum + gradePoints[entry.grade] * entry.count,
+      0,
+    ) / total;
+    const hasModifiedGrades = entries.some(({ grade }) => modifiedGrades.has(grade));
+    const availableGrades = gradeOrder.filter(
+      (grade) => hasModifiedGrades || baseGrades.has(grade),
+    ).filter((grade) => grade !== "W");
+    return availableGrades.reduce((closest, grade) =>
+      Math.abs(gradePoints[grade] - points) <
+      Math.abs(gradePoints[closest] - points) ? grade : closest,
+    "F");
+  }
+  const middle = (total - 1) / 2;
+  let seen = 0;
+  for (const entry of entries) {
+    seen += entry.count;
+    if (seen > middle) {
+      return entry.grade;
+    }
+  }
+  return entries[entries.length - 1].grade;
+}
+
+function renderSummary(grades) {
+  const gradedEntries = gradeOrder
+    .filter((grade) => grade !== "W" && (grades[grade] || 0) > 0)
+    .map((grade) => ({ grade, count: grades[grade] }));
+  const mostCommon = gradedEntries.sort((a, b) => b.count - a.count)[0]?.grade;
+  summaryStudents.textContent = getStudentCount(grades);
+  summaryAverage.textContent = getSummaryGrade(grades, "average") || "N/A";
+  summaryMedian.textContent = getSummaryGrade(grades, "median") || "N/A";
+  summaryCommon.textContent = mostCommon || "N/A";
+  summarySection.hidden = false;
 }
 
 function renderHistogram(course) {
@@ -267,8 +323,8 @@ async function loadCourseDetails() {
     courseHeading.textContent =
       `${fullCode}${scopeLabels.length ? ` (${scopeLabels.join(", ")})` : ""} grade distribution`;
     courseSummary.textContent =
-      `${displayCourse.courseTitle} — ${displayCourse.semester} — ${displayCourse.instructor} — ` +
-      `${getStudentCount(displayCourse.grades)} students`;
+      `${displayCourse.courseTitle} — ${displayCourse.semester} — ${displayCourse.instructor}`;
+    renderSummary(displayCourse.grades);
     renderHistogram(displayCourse);
   } catch (error) {
     showError("Course data could not be loaded.");

@@ -265,6 +265,38 @@ th {
   margin-left: 8px;
 }
 
+.summary-section {
+  margin: 16px 0 8px;
+}
+
+.summary-section h3 {
+  margin-bottom: 8px;
+}
+
+.summary-grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+}
+
+.summary-grid > div {
+  background: #eee;
+  border: 1px solid #bbb;
+  padding: 8px;
+}
+
+.summary-grid dt {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.summary-grid dd {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 4px 0 0;
+}
+
 .histogram {
   align-items: flex-start;
   display: flex;
@@ -391,6 +423,10 @@ tbody tr:nth-child(even) {
   .histogram {
     height: 290px;
     overflow-x: auto;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .histogram-plot {

@@ -29,6 +29,27 @@
       <h2 id="course-heading">Course grade distribution</h2>
       <p id="course-summary">Loading course data...</p>
       <p id="error-message" hidden>Course details could not be found.</p>
+      <section id="summary-section" class="summary-section" aria-labelledby="summary-heading" hidden>
+        <h3 id="summary-heading">Summary</h3>
+        <dl class="summary-grid">
+          <div>
+            <dt>Students</dt>
+            <dd id="summary-students"></dd>
+          </div>
+          <div>
+            <dt>Average grade</dt>
+            <dd id="summary-average"></dd>
+          </div>
+          <div>
+            <dt>Median grade</dt>
+            <dd id="summary-median"></dd>
+          </div>
+          <div>
+            <dt>Most common grade</dt>
+            <dd id="summary-common"></dd>
+          </div>
+        </dl>
+      </section>
       <section id="histogram-section" aria-labelledby="histogram-heading" hidden>
         <h3 id="histogram-heading">Grade distribution</h3>
         <div id="histogram" class="histogram" role="img" aria-label="Grade distribution histogram"></div>
