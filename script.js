@@ -579,6 +579,11 @@ document.querySelectorAll(".sort-button").forEach((button) => {
     if (sortKey !== clickedKey) {
       sortKey = clickedKey;
       sortDirection = 1;
+    } else if (
+      sortKey === defaultSortKey &&
+      sortDirection === defaultSortDirection
+    ) {
+      sortDirection = 1;
     } else if (sortDirection === 1) {
       sortDirection = -1;
     } else {
