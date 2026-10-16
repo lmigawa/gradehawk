@@ -37,10 +37,14 @@ python3 -m http.server
 Then open <http://localhost:8000>.
 
 Results are paginated in the browser so the page does not create thousands of
-table rows at once. The page size can be changed to 25, 50, or 100 results.
+table rows at once. The page size defaults to 25 on desktop and 10 on mobile,
+and can be changed to 10, 25, 50, or 100 results.
 
 The [help page](./info.html) explains search syntax, filters, grouping,
 sorting, details pages, and shareable search URLs.
+
+The [Disclaimer & Privacy page](./disclaimer.html) explains the project’s
+independent status, data source, informational use, and privacy practices.
 
 Course searches support simple query terms: space-separated positive terms are
 combined with AND by default. Type uppercase `OR` between terms to make them
