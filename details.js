@@ -2,6 +2,8 @@ const query = new URLSearchParams(window.location.search);
 const courseHeading = document.querySelector("#course-heading");
 const courseSummary = document.querySelector("#course-summary");
 const errorMessage = document.querySelector("#error-message");
+const errorText = document.querySelector("#error-text");
+const retryButton = document.querySelector("#retry-button");
 const summarySection = document.querySelector("#summary-section");
 const summaryStudents = document.querySelector("#summary-students");
 const summaryAverage = document.querySelector("#summary-average");
@@ -121,7 +123,8 @@ function populateDetailControls(
 function showError(message) {
   courseSummary.hidden = true;
   summarySection.hidden = true;
-  errorMessage.textContent = message;
+  histogramSection.hidden = true;
+  errorText.textContent = message;
   errorMessage.hidden = false;
 }
 
@@ -241,6 +244,12 @@ function renderHistogram(course) {
 }
 
 async function loadCourseDetails() {
+  errorMessage.hidden = true;
+  courseSummary.hidden = false;
+  courseSummary.classList.add("is-loading");
+  courseSummary.classList.remove("is-error");
+  courseSummary.innerHTML =
+    '<span class="loading-indicator" aria-hidden="true"></span>Loading course data...';
   const courseCode = query.get("courseCode");
   const section = query.get("section");
   const semester = query.get("semester");
@@ -324,9 +333,12 @@ async function loadCourseDetails() {
       `${fullCode}${scopeLabels.length ? ` (${scopeLabels.join(", ")})` : ""} grade distribution`;
     courseSummary.textContent =
       `${displayCourse.courseTitle} — ${displayCourse.semester} — ${displayCourse.instructor}`;
+    courseSummary.classList.remove("is-loading");
     renderSummary(displayCourse.grades);
     renderHistogram(displayCourse);
   } catch (error) {
+    courseSummary.classList.remove("is-loading");
+    courseSummary.classList.add("is-error");
     showError("Course data could not be loaded.");
     console.error(error);
   }
@@ -362,4 +374,5 @@ groupedFilter.addEventListener("change", () => {
   navigateToCourse(section, instructor, false, currentSemester);
 });
 
+retryButton.addEventListener("click", loadCourseDetails);
 loadCourseDetails();

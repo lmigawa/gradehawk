@@ -7,9 +7,13 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="page">
+    <a class="skip-link" href="#main-content">Skip to results</a>
+    <main id="main-content" class="page">
       <header>
-        <h1>GradeHawk</h1>
+        <div class="page-heading">
+          <h1>GradeHawk</h1>
+          <a class="info-link" href="info.html">How to use GradeHawk</a>
+        </div>
         <p>Search historical grade data for University of Iowa courses.</p>
       </header>
 
@@ -33,6 +37,7 @@
         <div class="filter-field">
           <label for="page-size">Results per page</label>
           <select id="page-size" name="page-size">
+            <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
             <option value="100">100</option>
@@ -50,9 +55,11 @@
           </label>
         </fieldset>
       </form>
-
       <section aria-live="polite">
-        <p id="status">Loading courses...</p>
+        <p id="status" class="status-message" role="status" aria-live="polite">
+          <span class="loading-indicator" aria-hidden="true"></span>
+          Loading courses...
+        </p>
         <div class="table-wrapper">
           <table>
             <thead>

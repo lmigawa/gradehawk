@@ -7,11 +7,15 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="page">
+    <a class="skip-link" href="#main-content">Skip to course details</a>
+    <main id="main-content" class="page">
       <p class="back-navigation">
         <a href="index.html"><span aria-hidden="true">←</span> Search results</a>
       </p>
-      <h1>GradeHawk</h1>
+      <div class="page-heading">
+        <h1>GradeHawk</h1>
+        <a class="info-link" href="info.html">How to use GradeHawk</a>
+      </div>
       <form id="detail-controls" class="detail-controls" hidden>
         <label for="semester-filter">Semester:</label>
         <select id="semester-filter"></select>
@@ -27,8 +31,14 @@
         </label>
       </form>
       <h2 id="course-heading">Course grade distribution</h2>
-      <p id="course-summary">Loading course data...</p>
-      <p id="error-message" hidden>Course details could not be found.</p>
+      <p id="course-summary" class="status-message" role="status" aria-live="polite">
+        <span class="loading-indicator" aria-hidden="true"></span>
+        Loading course data...
+      </p>
+      <div id="error-message" class="error-message" role="alert" hidden>
+        <p id="error-text">Course details could not be found.</p>
+        <button id="retry-button" type="button">Try again</button>
+      </div>
       <section id="summary-section" class="summary-section" aria-labelledby="summary-heading" hidden>
         <h3 id="summary-heading">Summary</h3>
         <dl class="summary-grid">

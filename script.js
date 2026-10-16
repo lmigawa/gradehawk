@@ -14,7 +14,7 @@ const pageStatus = document.querySelector("#page-status");
 let currentPage = 1;
 let sortKey = null;
 let sortDirection = 0;
-const validPageSizes = new Set(["25", "50", "100"]);
+const validPageSizes = new Set(["10", "25", "50", "100"]);
 const validSortKeys = new Set([
   "courseCode",
   "courseTitle",
@@ -69,7 +69,6 @@ const modifiedGrades = new Set([
   "D-",
 ]);
 const baseGrades = new Set(["A", "B", "C", "D", "D & F", "F"]);
-
 function getSemesters() {
   return [...new Set(courses.map((course) => course.semester))].sort(
     (a, b) => {
@@ -100,6 +99,8 @@ function applyUrlState() {
   const requestedPageSize = parameters.get("perPage");
   if (validPageSizes.has(requestedPageSize)) {
     pageSize.value = requestedPageSize;
+  } else if (window.matchMedia("(max-width: 640px)").matches) {
+    pageSize.value = "10";
   }
   const requestedSemester = parameters.get("semester");
   if (
@@ -406,21 +407,24 @@ function renderCourses(matches) {
           instructor: course.instructor,
         };
     courseLink.href = `details.html?${new URLSearchParams(detailParameters)}`;
+    courseCell.dataset.label = "Course";
     courseCell.append(courseLink);
     row.append(courseCell);
 
     [
-      ["course-title", course.courseTitle],
-      ["course-semester", course.semester],
+      ["course-title", "Course title", course.courseTitle],
+      ["course-semester", "Semester", course.semester],
       [
         `course-instructor${course.grouped ? " grouped-instructor" : ""}`,
+        "Instructor",
         course.instructor,
       ],
-      ["course-average", course.averageGrade || "N/A"],
-      ["course-median", course.medianGrade || "N/A"],
-    ].forEach(([className, value]) => {
+      ["course-average", "Average grade", course.averageGrade || "N/A"],
+      ["course-median", "Median grade", course.medianGrade || "N/A"],
+    ].forEach(([className, label, value]) => {
       const cell = document.createElement("td");
       cell.className = className;
+      cell.dataset.label = label;
       cell.textContent = value;
       row.append(cell);
     });
@@ -456,6 +460,9 @@ function updateResults() {
 }
 
 async function loadCourses() {
+  status.classList.add("is-loading");
+  status.innerHTML =
+    '<span class="loading-indicator" aria-hidden="true"></span>Loading courses...';
   try {
     const response = await fetch("data/courses.json");
     if (!response.ok) {
@@ -464,9 +471,13 @@ async function loadCourses() {
     courses = await response.json();
     populateSemesters();
     applyUrlState();
+    status.classList.remove("is-loading", "is-error");
+    status.textContent = `${courses.length.toLocaleString()} courses loaded`;
     updateResults();
   } catch (error) {
+    status.classList.remove("is-loading");
     status.textContent = "Course data could not be loaded.";
+    status.classList.add("is-error");
     console.error(error);
   }
 }

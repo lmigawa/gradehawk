@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>How to Use GradeHawk</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to help content</a>
+    <main id="main-content" class="page info-page">
+      <p class="back-navigation">
+        <a href="index.html"><span aria-hidden="true">←</span> Search results</a>
+      </p>
+      <div class="page-heading">
+        <h1>How to use GradeHawk</h1>
+        <a class="info-link" href="index.html">Back to search</a>
+      </div>
+
+      <p>
+        GradeHawk helps you search historical University of Iowa course grade
+        distributions by course, title, instructor, and semester.
+      </p>
+
+      <h2>Search for a course</h2>
+      <p>
+        Enter a course code, course title, or instructor name. Search terms are
+        combined with AND by default.
+      </p>
+      <ul>
+        <li><code>CS:2230</code> finds a specific course.</li>
+        <li><code>data structures</code> finds results containing both terms.</li>
+        <li><code>CS OR MATH</code> finds results matching either subject.</li>
+        <li><code>data -lab</code> includes “data” and excludes “lab”.</li>
+        <li><code>"linear algebra"</code> searches for an exact phrase.</li>
+        <li><code>CS:4*</code> matches course codes beginning with <code>CS:4</code>.</li>
+      </ul>
+
+      <h2>Filter the results</h2>
+      <dl class="info-list">
+        <div>
+          <dt>Semester</dt>
+          <dd>Show results from one semester or all available semesters.</dd>
+        </div>
+        <div>
+          <dt>Results per page</dt>
+          <dd>Choose how many results appear at once. Mobile starts with 10.</dd>
+        </div>
+        <div>
+          <dt>Group sections</dt>
+          <dd>Combine sections of the same course within each semester.</dd>
+        </div>
+        <div>
+          <dt>Group semesters</dt>
+          <dd>Combine the course’s results across semesters. This also enables Group sections.</dd>
+        </div>
+      </dl>
+
+      <h2>Sort results</h2>
+      <p>
+        Select a table heading to sort by that column. Select it again to
+        reverse the order, and a third time to return to the default order.
+      </p>
+
+      <h2>View course details</h2>
+      <p>
+        Select a course code to open its grade distribution. The details page
+        includes a summary, histogram, grade-count table, section selector,
+        and semester selector.
+      </p>
+      <p>
+        Use <strong>All sections</strong> or <strong>All semesters</strong> to
+        combine distributions across the selected scope.
+      </p>
+
+      <h2>Share a search</h2>
+      <p>
+        Search settings are saved in the page URL. Copy the URL from your
+        browser to share the same query, filters, grouping settings, and sort
+        order with someone else.
+      </p>
+    </main>
+  </body>
+</html>

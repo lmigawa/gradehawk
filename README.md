@@ -39,6 +39,9 @@ Then open <http://localhost:8000>.
 Results are paginated in the browser so the page does not create thousands of
 table rows at once. The page size can be changed to 25, 50, or 100 results.
 
+The [help page](./info.html) explains search syntax, filters, grouping,
+sorting, details pages, and shareable search URLs.
+
 Course searches support simple query terms: space-separated positive terms are
 combined with AND by default. Type uppercase `OR` between terms to make them
 alternatives, while terms beginning with `-` are excluded. Put a phrase in
