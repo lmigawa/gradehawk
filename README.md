@@ -51,6 +51,10 @@ Course-code searches may include or omit the colon, so both `MATH:1210` and
 `math1210` find the same course.
 Search terms also match instructor names.
 
+Search filters are reflected in the page URL, including the search query,
+semester, page size, grouping options, and sort order. Copy the URL to share
+the same search view with someone else.
+
 The results table also shows each row's average and median grade category in
 separate columns, calculated from the source grade distributions. For newer
 source sheets that combine D and F into one category, the summary preserves

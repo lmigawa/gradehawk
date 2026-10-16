@@ -14,6 +14,15 @@ const pageStatus = document.querySelector("#page-status");
 let currentPage = 1;
 let sortKey = null;
 let sortDirection = 0;
+const validPageSizes = new Set(["25", "50", "100"]);
+const validSortKeys = new Set([
+  "courseCode",
+  "courseTitle",
+  "semester",
+  "instructor",
+  "averageGrade",
+  "medianGrade",
+]);
 
 const gradeOrder = [
   "A+",
@@ -83,6 +92,61 @@ function populateSemesters() {
     option.textContent = semester;
     semesterFilter.append(option);
   });
+}
+
+function applyUrlState() {
+  const parameters = new URLSearchParams(window.location.search);
+  courseSearch.value = parameters.get("q") || "";
+  const requestedPageSize = parameters.get("perPage");
+  if (validPageSizes.has(requestedPageSize)) {
+    pageSize.value = requestedPageSize;
+  }
+  const requestedSemester = parameters.get("semester");
+  if (
+    requestedSemester &&
+    [...semesterFilter.options].some(
+      (option) => option.value === requestedSemester,
+    )
+  ) {
+    semesterFilter.value = requestedSemester;
+  }
+  groupSemesters.checked = parameters.get("groupSemesters") === "1";
+  groupSections.checked =
+    groupSemesters.checked || parameters.get("groupSections") === "1";
+
+  const requestedSortKey = parameters.get("sort");
+  sortKey = validSortKeys.has(requestedSortKey) ? requestedSortKey : null;
+  sortDirection =
+    sortKey && parameters.get("direction") === "desc" ? -1 : sortKey ? 1 : 0;
+  updateGroupingControls();
+  updateSortIndicators();
+}
+
+function updateUrlState() {
+  const parameters = new URLSearchParams();
+  if (courseSearch.value) {
+    parameters.set("q", courseSearch.value);
+  }
+  if (semesterFilter.value) {
+    parameters.set("semester", semesterFilter.value);
+  }
+  if (pageSize.value !== "25") {
+    parameters.set("perPage", pageSize.value);
+  }
+  if (groupSections.checked) {
+    parameters.set("groupSections", "1");
+  }
+  if (groupSemesters.checked) {
+    parameters.set("groupSemesters", "1");
+  }
+  if (sortKey) {
+    parameters.set("sort", sortKey);
+    if (sortDirection === -1) {
+      parameters.set("direction", "desc");
+    }
+  }
+  const query = parameters.toString();
+  history.replaceState(null, "", query ? `?${query}` : window.location.pathname);
 }
 
 function parseSearchQuery(query) {
@@ -399,6 +463,7 @@ async function loadCourses() {
     }
     courses = await response.json();
     populateSemesters();
+    applyUrlState();
     updateResults();
   } catch (error) {
     status.textContent = "Course data could not be loaded.";
@@ -408,6 +473,7 @@ async function loadCourses() {
 
 function resetAndUpdateResults() {
   currentPage = 1;
+  updateUrlState();
   updateResults();
 }
 
@@ -445,6 +511,39 @@ document.querySelector("#filters").addEventListener("submit", (event) => {
   event.preventDefault();
 });
 
+function updateSortIndicators() {
+  document.querySelectorAll(".sort-button").forEach((sortButton) => {
+    const isActive = sortButton.dataset.sortKey === sortKey;
+    const header = sortButton.closest("th");
+    const label =
+      sortButton.dataset.sortLabel ||
+      sortButton.textContent.replace(/[▲▼]/g, "").trim();
+    sortButton.dataset.sortLabel = label;
+    const indicator = isActive
+      ? sortDirection === 1
+        ? " (ascending)"
+        : " (descending)"
+      : "";
+    const sortIndicator = sortButton.querySelector(".sort-indicator");
+    sortIndicator.className = `sort-indicator ${
+      isActive
+        ? sortDirection === 1
+          ? "sort-ascending"
+          : "sort-descending"
+        : ""
+    }`;
+    if (isActive) {
+      header.setAttribute(
+        "aria-sort",
+        sortDirection === 1 ? "ascending" : "descending",
+      );
+    } else {
+      header.removeAttribute("aria-sort");
+    }
+    sortButton.setAttribute("aria-label", `${label}${indicator}`);
+  });
+}
+
 document.querySelectorAll(".sort-button").forEach((button) => {
   button.addEventListener("click", () => {
     const clickedKey = button.dataset.sortKey;
@@ -458,40 +557,16 @@ document.querySelectorAll(".sort-button").forEach((button) => {
       sortDirection = 0;
     }
 
-    document.querySelectorAll(".sort-button").forEach((sortButton) => {
-      const isActive = sortButton.dataset.sortKey === sortKey;
-      const header = sortButton.closest("th");
-      const label =
-        sortButton.dataset.sortLabel ||
-        sortButton.textContent.replace(/[▲▼]/g, "").trim();
-      sortButton.dataset.sortLabel = label;
-      const indicator = isActive
-        ? sortDirection === 1
-          ? " (ascending)"
-          : " (descending)"
-        : "";
-      const sortIndicator = sortButton.querySelector(".sort-indicator");
-      sortIndicator.className = `sort-indicator ${
-        isActive
-          ? sortDirection === 1
-            ? "sort-ascending"
-            : "sort-descending"
-          : ""
-      }`;
-      if (isActive) {
-        header.setAttribute(
-          "aria-sort",
-          sortDirection === 1 ? "ascending" : "descending",
-        );
-      } else {
-        header.removeAttribute("aria-sort");
-      }
-      sortButton.setAttribute("aria-label", `${label}${indicator}`);
-    });
-
+    updateSortIndicators();
     currentPage = 1;
+    updateUrlState();
     updateResults();
   });
+});
+window.addEventListener("popstate", () => {
+  applyUrlState();
+  currentPage = 1;
+  updateResults();
 });
 updateGroupingControls();
 loadCourses();
